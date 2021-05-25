@@ -1,37 +1,35 @@
-# include<stdio.h>
-# include<math.h>
+#include <stdio.h>
+#include <math.h>
+double Integral(long int n)
+{
+	double f = 0.0f, x, h = 2.0 / n;
+	for (int i = 0; i < n; i++)
+	{
+		x = i * h + h / 2.0f;
+		if (x >= 0 && x <= 1)
+        {
+            f += cos(x) * exp(-x * x);
+        }
+        else
+            f += log(x + 1) - sqrt(4 - (x * x));
+	}
+	return f * h;
+}
 int main()
 {
-    double t, x, f, i, n, n2, xmin, h, d;
-    int max = 2.0;
-    printf("Введите шаг - > ");
-    scanf("%lf", &t);
-    while (d >= t)
-    {
-        n = 0.0;
-        n2 = n;
-        d = 0.0;
-        h = 2.0 / max;
-        for (int min = 0; i < max; i++)
-        {
-            xmin = min * h;
-            x = xmin + h / 2.0;
-            if (x >= 0 && x <= 1)
-            {
-                f = cos(x)*exp(pow(-x,2));
-            }
-            else
-            {
-                f = log(x + 1) - sqrt(4 - pow(x,2));
-            }
-            n = n + f;
-        }
-        n = h * n;
-        max = max * 2;
-        d = fabs(n - n2) / 2.0;
-    }
-    printf("\nI = %.8lf", n);
-    printf("\nd = %.8lf", d);
-    printf("\nmax = %.d\n", max);
-    return 0;
+	double In, I2n, e, answer = 0.33735f, del;
+	long int n = 1;
+	printf("Введите точность -> ");
+	scanf("%lf", &e);
+	In = I2n = Integral(n);
+	do
+	{
+		In = I2n;
+		n *= 2;
+		I2n = Integral(n);
+		del = fabs(In - I2n) / 3;
+		printf("| n = %ld | I = %lf | D = %lf | \n\n", n, I2n, del);
+	}
+	while(del >= e);
+	printf(" \n Ответ = %lf \n In = %lf \n ", answer, In);
 }
