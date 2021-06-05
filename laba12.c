@@ -10,8 +10,8 @@ typedef struct friends
     char patronymic[20];
     int birthday;
     int mounth;
-    char day[20];
-    char addr[20]; //secondname, patronymic, birthday, telephone
+    int day;
+    char addr[20];
     long int telephone;
 } friend;
 
@@ -26,7 +26,6 @@ void fill(int n, friend *name)
     char v1[20];
     char v2[20];
     char v3[20];
-    char v5[20];
     char v6[20];
     int k = 0;
     for (int i = 0; i < n; i++)
@@ -59,10 +58,7 @@ void fill(int n, friend *name)
                 printf("Введите месяц рождения друга -> ");
                 scanf("%d", &name[i].mounth);
                 printf("Введите день рождения друга -> ");
-                scanf("%s", v5);
-                for (int t = 0; t < 20; t++)
-                    v5[t] = tolower(v5[t]);
-                strcpy(name[i].day, v5);
+                scanf("%d", &name[i].day);
                 printf("Введите адрес друга-> ");
                 scanf("%s", v6);
                 for (int t = 0; t < 20; t++)
@@ -95,7 +91,7 @@ void printstr(int n, friend *name)
             printf("Отчество друга №%d = %s\n", i, name[i].patronymic);
             printf("Год рождения друга №%d = %d\n", i, name[i].birthday);
             printf("месяц рождения друга №%d = %d\n", i, name[i].mounth);
-            printf("День рождения друга №%d = %s\n", i, name[i].day);
+            printf("День рождения друга №%d = %d\n", i, name[i].day);
             printf("Адрес друга №%d = %s\n", i, name[i].addr);
             printf("Домашний телефон друга №%d = %ld\n", i, name[i].telephone);
 
@@ -118,11 +114,35 @@ void search(int n, friend *name)
       printf("Отчество друга №%d = %s\n", i, name[i].patronymic);
       printf("Год рождения друга №%d = %d\n", i, name[i].birthday);
       printf("Месяц рождения друга №%d = %d\n", i, name[i].mounth);
-      printf("День рождения друга №%d = %s\n", i, name[i].day);
+      printf("День рождения друга №%d = %d\n", i, name[i].day);
       printf("Адрес друга №%d = %s\n", i, name[i].addr);
       printf("Домашний телефон друга №%d = %ld\n", i, name[i].telephone);
     }
   }
+}
+
+void read_friend(int n, friend *name)
+{
+    FILE* friend_list = fopen("friend_list.txt", "r");
+    if (friend_list == NULL)
+        printf("Файла со списком магазинов не существует\n");
+    else
+    {
+        for(int i = 0; i < n; i++)
+            fscanf(friend_list, "%d %s %s %s %d %d %d %s %ld \n", &name[i].status, name[i].name, name[i].secondname, name[i].patronymic, &name[i].birthday, &name[i].mounth, &name[i].day, name[i].addr, &name[i].telephone);
+        fclose(friend_list);
+    }
+}
+
+void write_friend(int n, friend *name)
+{
+    FILE* friend_list = fopen("friend_list.txt", "w");
+    for (int i = 0; i < n; i++)
+    {
+        if (name[i].status)
+        fprintf(friend_list, "%d %s %s %s %d %d %d %s %ld \n", name[i].status, name[i].name, name[i].secondname, name[i].patronymic, name[i].birthday, name[i].mounth, name[i].day, name[i].addr, name[i].telephone);
+    }
+    fclose(friend_list);
 }
 
 int main()
@@ -131,17 +151,18 @@ int main()
   unsigned int k = 5;
   friend  test[n];
   init_friend(n, test);
-  friend  test1 = {1, "Иван", "Иванов","Иванович",  2000, 8, "12", "Пушкина", 1};
-  test[0] = test1;
-  friend  test2 = {1, "Петя", "Петров","Петрович",  1999, 5, "12", "Ленина", 1};
-  test[1] = test2;
-  friend  test3 = {1, "Костя", "Дмитриев","Костенко",  1998, 8, "12", "Гагарина", 1};
-  test[2] = test3;
+  // friend  test1 = {1, "Иван", "Иванов","Иванович",  2000, 8, 12, "Пушкина", 123456};
+  // test[0] = test1;
+  // friend  test2 = {1, "Петя", "Петров","Петрович",  1999, 5, 12, "Ленина", 123456};
+  // test[1] = test2;
+  // friend  test3 = {1, "Костя", "Дмитриев","Костенко",  1998, 8, 12, "Гагарина", 123456};
+  // test[2] = test3;
+  read_friend(n, test);
   while(k != 255)
   {
       printf("----------------------\n  Выберите операцию:\n 1:Просмотр всего списка друзей\n 2:Добавление друга\n 3:Удаление друга\n 4:Поиск по месяцу\n 5:Закрыть программу\n----------------------\n");
       scanf("%d", &k);
-      if (k > 4)
+      if (k > 5)
           printf("Введена неверная операция!\n");
       else
       {
@@ -169,5 +190,6 @@ int main()
       if (k != 255)
           k = 0;
   }
+  write_friend(n, test);
   return 0;
 }
